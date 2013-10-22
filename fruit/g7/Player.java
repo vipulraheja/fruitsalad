@@ -16,6 +16,10 @@ public class Player extends fruit.sim.Player
                         boolean musTake) {
 	double expected = expectedValue(bowl, bowlId, round);
 
+	System.out.println("Pref:\n");
+	for (int i=0 ; i<preference.length ; i++)
+		System.out.print(preference[i] + ", ");
+
 	if (musTake)
 		return true;
 
@@ -28,16 +32,23 @@ public class Player extends fruit.sim.Player
 
     private Random random = new Random();
 
-    public double score(int[] bowl, int bowlId, int round){
-	    double score = 0;
+    public int score(int[] bowl, int bowlId, int round){
+	    int score = 0;
 	    for (int i=0 ; i<bowl.length ; i++){
-		    score += preference[bowl[i]];
+		    score += preference[i] * bowl[i];
 	    }
+	    System.out.println("Score: " + score);
 	    return score;
     }
 
     public double expectedValue(int[] bowl, int bowlId, int round){
-	    double expected = bowl.length * 6.5;
+	    
+	    int bowlSize = 0;
+	    for(int i=0; i<bowl.length; i++)
+	    	bowlSize += bowl[i];
+
+	    double expected = bowlSize * 6.5;
+	    System.out.println("Exp: " + expected);
 	    return expected;
     }
 }
