@@ -11,16 +11,15 @@ public class Player extends fruit.sim.Player
     private int[][] fruitHistory;
 	private int[] originalDistribution;
 	private int[] currentDistribution;
+	private Random random = new Random();
 
-    // Since there are 12 Players
+    // Since there are 12 Fruits
     private static int NUM_FRUITS = 12;
    
     public void init(int nplayers, int[] pref) {
 	    preference = pref;
 	    n_players = nplayers;
-
-	    // Since there are 2 rounds
-	    n_bowls = nplayers*2;
+	    n_bowls = nplayers*2; // Since there are 2 rounds
 		
 		originalDistribution = new int[NUM_FRUITS];
 		currentDistribution = new int[NUM_FRUITS];
@@ -35,25 +34,26 @@ public class Player extends fruit.sim.Player
     public boolean pass(int[] bowl, int bowlId, int round,
                         boolean canPick,
                         boolean musTake) {
-	double expected = expectedValue(bowl, bowlId, round);
+		double expected;
 	
-	bowlSize = 0;
-	for(int i=0; i<bowl.length; i++)
-		bowlSize += bowl[i];
+		bowlSize = 0;
+		for(int i=0; i<bowl.length; i++)
+			bowlSize += bowl[i];
 	
-	estimateDistribution();
-	fruitHistory = history(bowl, bowlId, round);
+		estimateDistribution();
+		fruitHistory = history(bowl, bowlId, round);
+		expected = expectedValue(bowl, bowlId, round);
 	
-	for (int i=0 ; i<preference.length ; i++)
-		System.out.print(preference[i] + ", ");
+//		for (int i=0 ; i<preference.length ; i++)
+//			System.out.print(preference[i] + ", ");
 
-	if (musTake)
-		return true;
+		if (musTake)
+			return true;
 
-	if (canPick && score(bowl, bowlId, round) >= expected)
-		return true;
-
-        return false;
+		if (canPick && score(bowl, bowlId, round) >= expected)
+			return true;
+		else
+		    return false;
     }
 
     private int[][] history(int[] bowl, int bowlId, int round){
@@ -64,8 +64,6 @@ public class Player extends fruit.sim.Player
 	    return fruitHistory;
     }
 
-    private Random random = new Random();
-
     private int score(int[] bowl, int bowlId, int round){
 	    int score = 0;
 	    for (int i=0 ; i<bowl.length ; i++){
@@ -75,20 +73,33 @@ public class Player extends fruit.sim.Player
 	    return score;
     }
 
-    private double expectedValue(int[] bowl, int bowlId, int round){
-	    
+	private double expectedValue(int[] bowl, int bowlId, int round){
 	    int bowlSize = 0;
 	    for(int i=0; i<bowl.length; i++)
 	    	bowlSize += bowl[i];
 
-	    double expected = bowlSize * 6.5;
+		double avgFruitScore = 0;
+		int totFruitsInDistribution = 0;
+		for(int i=0; i<NUM_FRUITS; i++){
+			if(currentDistribution[i] > 0){
+				totFruitsInDistribution += currentDistribution[i];
+				avgFruitScore += preference[i] * currentDistribution[i];
+			}
+		}
+
+		//if for some reason totFruitsInDistrubtion == 0
+		//assume uniform
+		if(avgFruitScore == 0)
+			avgFruitScore = 6.5;
+		else
+			avgFruitScore /= totFruitsInDistribution;
+
+	    double expected = bowlSize * avgFruitScore;
 	    System.out.println("Exp: " + expected);
 	    return expected;
     }
 
-	//Estimate the original distribution of fruits
 	private void estimateDistribution(){
-	
 		int totalSelections = 0;
 		
 		//Number of times each fruit category has been selected for distribution
@@ -96,13 +107,10 @@ public class Player extends fruit.sim.Player
 		
 		//Number of fruit of each category has been distributed
 		int[] distributedFruits = new int[NUM_FRUITS];
-
 	
 		for(int i = 0;i<fruitHistory.length;i++){
 			for(int j = 0;j<fruitHistory[i].length;j++){
-			
 				//System.out.println("fruitHistory["+i+"]["+j+"]="+fruitHistory[i][j]);
-		
 				if(fruitHistory[i][j]!=0){
 					totalSelections++;
 					selectedFruits[j]++;
@@ -111,33 +119,30 @@ public class Player extends fruit.sim.Player
 			}
 		}
 		
-		System.out.println("Bowl size:"+bowlSize);
-		System.out.println("TotalSelections:"+totalSelections);
+//		System.out.println("Bowl size:"+bowlSize);
+//		System.out.println("TotalSelections:"+totalSelections);
 		
-		for(int i = 0;i<selectedFruits.length;i++){
-			System.out.println("selectedFruits[i]:"+selectedFruits[i]);
-		}
-		
+//		for(int i = 0;i<selectedFruits.length;i++){
+//			System.out.println("selectedFruits[i]:"+selectedFruits[i]);
+//		}
 		
 		for(int i = 0;i<distributedFruits.length;i++){
 			
 			if(totalSelections==0)
 				originalDistribution[i] = 0;
 			else
-				//For each fruit determine the percentage of chosen fruits which are this fruit and multiply by the total number of fruit in the bowl being selected from
+				//For each fruit determine the percentage of chosen fruits
+				//which are this fruit and multiply by the total number 
+				//of fruit in the bowl being selected from
 				originalDistribution[i] = (int) Math.round(n_players*bowlSize*selectedFruits[i]/totalSelections);
 				
-			System.out.println("Estimate of original distribution of fruit " + i + " = " + originalDistribution[i]);
+//			System.out.println("Estimate of original distribution of fruit " + i + " = " + originalDistribution[i]);
 			
 			//Estimate the current distribution by substracting the distributed fruits from the estimated original distribution
 			currentDistribution[i] = originalDistribution[i] - distributedFruits[i];
-			System.out.println("Estimate of current distribution of fruit " + i + " = " + currentDistribution[i]);
-		
+//			System.out.println("Estimate of current distribution of fruit " + i + " = " + currentDistribution[i]);
 		}
-		
-
+		for(int i=0;i<distributedFruits.length;i++)
+			System.out.println("curr Dist: "+currentDistribution[i]);
 	}
-	
-
-	
 }
