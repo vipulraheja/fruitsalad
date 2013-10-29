@@ -794,7 +794,7 @@ public class Fruit
         // print aggregate score
         System.err.println("###### Tournament result ######");
         for (int p = 0; p < playerNames.length; ++p) {
-            System.err.println(playerNames[p] + ":" + 1.0 * totalScores[p] / repeats);
+            System.err.println(playerNames[p] + ":" + 1.0 * totalScores[p] / repeats + ", " + expectation[p]);
         }
         
     }

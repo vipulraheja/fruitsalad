@@ -57,7 +57,6 @@ public class Player extends fruit.sim.Player
         }
 
         // we try to infer the current platter using the information that we have
-        
         // first we generate a platter
         // for now uniform, must improve on this
         int total_fruit = bowlsize*nplayers;
@@ -65,7 +64,7 @@ public class Player extends fruit.sim.Player
             uniform_platter[i] = Math.round(total_fruit/uniform_platter.length);
         }
         
-        
+        System.out.print("est UNIFROM platter before: "); disp(uniform_platter);
         
         // recompute the probabilities of each fruit in a 
         // full platter based on what we've seen so far
