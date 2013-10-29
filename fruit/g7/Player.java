@@ -89,9 +89,6 @@ public class Player extends fruit.sim.Player
 			System.out.println(prob_sum);
 		}
 
-		// update r0 probs
-		//if (round == FIRST) r0_probs = fruit_probs.clone();
-
 		for (int i = 0; i < NUM_FRUITS ; i++) {
 			System.out.print(fruit_probs[i] + "||");
 		}
