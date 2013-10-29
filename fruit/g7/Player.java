@@ -8,6 +8,8 @@ public class Player extends fruit.sim.Player
     int n_players;
     int n_bowls;
 	int bowlSize;
+	int playerIndex;
+	int bowlsSeen[] = new int[2];
     private int[][] fruitHistory;
 	private int[] originalDistribution;
 	private int[] currentDistribution;
@@ -20,7 +22,10 @@ public class Player extends fruit.sim.Player
 	    preference = pref;
 	    n_players = nplayers;
 	    n_bowls = nplayers*2; // Since there are 2 rounds
-		
+		playerIndex = this.getIndex();
+		bowlsSeen[0] = 0;
+		bowlsSeen[1] = 0;
+
 		originalDistribution = new int[NUM_FRUITS];
 		currentDistribution = new int[NUM_FRUITS];
 	    fruitHistory = new int[n_bowls][NUM_FRUITS];
@@ -35,7 +40,8 @@ public class Player extends fruit.sim.Player
                         boolean canPick,
                         boolean musTake) {
 		double expected;
-	
+		double offset;
+
 		bowlSize = 0;
 		for(int i=0; i<bowl.length; i++)
 			bowlSize += bowl[i];
@@ -43,14 +49,15 @@ public class Player extends fruit.sim.Player
 		estimateDistribution();
 		fruitHistory = history(bowl, bowlId, round);
 		expected = expectedValue(bowl, bowlId, round);
-	
+		offset = offset(round, expected);
+		
 //		for (int i=0 ; i<preference.length ; i++)
 //			System.out.print(preference[i] + ", ");
 
 		if (musTake)
 			return true;
 
-		if (canPick && score(bowl, bowlId, round) >= expected)
+		if (canPick && score(bowl, bowlId, round) >= expected + offset)
 			return true;
 		else
 		    return false;
@@ -145,4 +152,22 @@ public class Player extends fruit.sim.Player
 		for(int i=0;i<distributedFruits.length;i++)
 			System.out.println("curr Dist: "+currentDistribution[i]);
 	}
+
+	public double offset(int round, double expectedValue){
+		this.bowlsSeen[round]++;		
+
+		int totBowls = n_players - playerIndex + 1;
+		if(round == 1)
+			totBowls = playerIndex;
+
+		int bowlsLeft = totBowls - bowlsSeen[round]; 
+
+		if(totBowls == 0)
+			return 0;
+		else
+			return expectedValue * bowlsLeft / totBowls; 
+
+	}
 }
+
+
