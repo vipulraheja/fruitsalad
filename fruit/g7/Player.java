@@ -8,7 +8,6 @@ public class Player extends fruit.sim.Player
     int n_players;
     int n_bowls;
 	int bowlSize;
-	int playerIndex;
     private int[][] fruitHistory;
 	private int[] originalDistribution;
 	private int[] currentDistribution;
@@ -21,8 +20,7 @@ public class Player extends fruit.sim.Player
 	    preference = pref;
 	    n_players = nplayers;
 	    n_bowls = nplayers*2; // Since there are 2 rounds
-		playerIndex = this.getIndex();		
-
+		
 		originalDistribution = new int[NUM_FRUITS];
 		currentDistribution = new int[NUM_FRUITS];
 	    fruitHistory = new int[n_bowls][NUM_FRUITS];
@@ -37,7 +35,6 @@ public class Player extends fruit.sim.Player
                         boolean canPick,
                         boolean musTake) {
 		double expected;
-System.out.println("bowlID: "+bowlId);
 	
 		bowlSize = 0;
 		for(int i=0; i<bowl.length; i++)
@@ -145,15 +142,7 @@ System.out.println("bowlID: "+bowlId);
 			currentDistribution[i] = originalDistribution[i] - distributedFruits[i];
 //			System.out.println("Estimate of current distribution of fruit " + i + " = " + currentDistribution[i]);
 		}
-		
-		System.out.printf("Current Distribution: ");
 		for(int i=0;i<distributedFruits.length;i++)
-			System.out.printf(" %d",currentDistribution[i]);
-		System.out.println();		
-
-		System.out.printf("Original Distribution: ");
-		for(int i=0; i<originalDistribution.length; i++)
-			System.out.printf(" %d",originalDistribution[i]);
-		System.out.println();
+			System.out.println("curr Dist: "+currentDistribution[i]);
 	}
 }

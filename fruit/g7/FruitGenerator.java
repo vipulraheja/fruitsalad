@@ -46,6 +46,10 @@ public class FruitGenerator implements fruit.sim.FruitGenerator
 		}
 		dist[8] = bin3 - sum;
 
-		return dist;
+		float[] dist_float = new float[12];
+		for (int i=0; i<12 ; i++)
+			dist2[i] = dist[i]/12.0;
+
+		return dist2;
 	}
 }
