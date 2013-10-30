@@ -231,6 +231,8 @@ public class Player extends fruit.sim.Player
 	public double offset(int round, double expectedValue){
 		this.bowlsSeen[round]++;		
 
+		double CONSTANT = 0.5;
+
 		int totBowls = n_players - playerIndex + 1;
 		if(round == 1)
 			totBowls = playerIndex;
@@ -240,7 +242,7 @@ public class Player extends fruit.sim.Player
 		if(totBowls == 0)
 			return 0;
 		else
-			return expectedValue * bowlsLeft / totBowls; 
+			return CONSTANT * expectedValue * bowlsLeft / totBowls; 
 
 	}
     
