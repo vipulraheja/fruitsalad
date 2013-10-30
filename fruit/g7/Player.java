@@ -61,50 +61,8 @@ public class Player extends fruit.sim.Player
 		// Total Fruits
 		n_fruits = n_players*bowlSize;
 
-		// Initially, create a uniform distribution
-		for (int i=0; i < NUM_FRUITS ; i++) {
-			originalDistribution[i] = Math.round(n_fruits/NUM_FRUITS);
+		estimateDistribution(bowl, bowlId, round, bowlSize);
 
-			// Assign uniform probability
-			if (bowls_seen[0] == 0 || bowls_seen[1] == 0)
-			{
-				java.util.Arrays.fill(fruit_probs, 1.0 / NUM_FRUITS);
-			}
-		}
-		
-		// Update fruit history as bowls come by
-		fruitHistory = history(bowl, bowlId, round);
-		bowls_seen[round]++;
-
-		if (bowls_seen[0] > 0 || bowls_seen[1] > 0)
-		{
-			// Update Probabilities
-			double prob_sum = 0.0;
-			for (int i = 0; i < NUM_FRUITS ; i++) {
-				fruit_probs[i] += (fruitHistory[round*n_players + bowlId][i]*1.0/bowlSize);
-				System.out.println("Seen: " + fruit_probs[i] + " No: " + fruitHistory[round*n_players + bowlId][i]);
-				System.out.println(" prob: " + fruitHistory[round*n_players + bowlId][i]*1.0/bowlSize);
-				prob_sum += fruit_probs[i];
-			}
-			System.out.println(prob_sum);
-		}
-
-		for (int i = 0; i < NUM_FRUITS ; i++) {
-			System.out.print(fruit_probs[i] + "||");
-		}
-	
-		// generate a platter based on estimated probabilties of each fruit
-		for (int i=0; i < NUM_FRUITS ; i++) {
-			currentDistribution[i] = (int) Math.round(n_fruits * fruit_probs[i]);
-		}
-
-//		showBowl(originalDistribution);
-//		showBowl(currentDistribution);
-
-		for (int i=0; i < NUM_FRUITS ; i++) {
-			originalDistribution[i] -= currentDistribution[i];
-		}
-	
 		expected = expectedValue(bowl, bowlId, round);
 	
 		if (musTake)
@@ -169,8 +127,54 @@ public class Player extends fruit.sim.Player
 	    return expected;
     }
 
-    private void estimateDistribution()
-    {
+    private void estimateDistribution(int[] bowl, int bowlId, int round, int bowlSize){
+	    // Initially, create a uniform distribution
+	    for (int i=0; i < NUM_FRUITS ; i++) {
+		    originalDistribution[i] = Math.round(n_fruits/NUM_FRUITS);
+
+		    // Assign uniform probability
+		    if (bowls_seen[0] == 0 || bowls_seen[1] == 0)
+		    {
+			    java.util.Arrays.fill(fruit_probs, 1.0 / NUM_FRUITS);
+		    }
+	    }
+
+	    // Update fruit history as bowls come by
+	    fruitHistory = history(bowl, bowlId, round);
+	    bowls_seen[round]++;
+
+	    if (bowls_seen[0] > 0 || bowls_seen[1] > 0)
+	    {
+		    // Update Probabilities
+		    double prob_sum = 0.0;
+		    for (int i = 0; i < NUM_FRUITS ; i++) {
+			    fruit_probs[i] += (fruitHistory[round*n_players + bowlId][i]*1.0/bowlSize);
+//			    System.out.println("Seen: " + fruit_probs[i] + " No: " + fruitHistory[round*n_players + bowlId][i]);
+//			    System.out.println(" prob: " + fruitHistory[round*n_players + bowlId][i]*1.0/bowlSize);
+			    prob_sum += fruit_probs[i];
+		    }
+//		    System.out.println(prob_sum);
+	    }
+
+//	    for (int i = 0; i < NUM_FRUITS ; i++) {
+//		    System.out.print(fruit_probs[i] + "||");
+//	    }
+
+	    // generate a platter based on estimated probabilties of each fruit
+	    for (int i=0; i < NUM_FRUITS ; i++) {
+		    currentDistribution[i] = (int) Math.round(n_fruits * fruit_probs[i]);
+	    }
+
+	    //		showBowl(originalDistribution);
+	    //		showBowl(currentDistribution);
+
+	    for (int i=0; i < NUM_FRUITS ; i++) {
+		    originalDistribution[i] -= currentDistribution[i];
+	    }
+
+    }
+
+    private void estimateDistribution_orig(){
 	    int totalSelections = 0;
 
 	    // Number of times each fruit category has been selected for distribution
