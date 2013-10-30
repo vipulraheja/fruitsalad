@@ -11,7 +11,7 @@ public class Player extends fruit.sim.Player
 	int playerIndex;
 	
 	int bowlsSeen[] = new int[2];
-    int bowlSize;
+	int bowlSize;
     int n_fruits;
     int[] bowls_seen;
 
@@ -244,48 +244,6 @@ public class Player extends fruit.sim.Player
 
 	}
     
-	private void estimateDistribution()
-    {
-	    int totalSelections = 0;
-
-	    // Number of times each fruit category has been selected for distribution
-	    int[] selectedFruits = new int[NUM_FRUITS];
-
-	    //i Number of fruit of each category has been distributed
-	    int[] distributedFruits = new int[NUM_FRUITS];
-
-	    for(int i = 0;i<fruitHistory.length;i++)
-	    {
-		    for(int j = 0;j<fruitHistory[i].length;j++)
-		    {
-			    if(fruitHistory[i][j]!=0){
-				    totalSelections++;
-				    selectedFruits[j]++;
-
-				    distributedFruits[j] += fruitHistory[i][j];
-			    }
-		    }
-	    }
-
-	    for(int i = 0;i<distributedFruits.length;i++)
-	    {
-		    if(totalSelections==0)
-			    originalDistribution[i] = 0;
-		    else
-			    // For each fruit determine the percentage of chosen fruits
-			    // which are this fruit and multiply by the total number
-			    // of fruit in the bowl being selected from
-			    originalDistribution[i] = (int) Math.round(distributedFruits[i]/(bowlSize));
-			    System.out.println("Estimate of original distribution of fruit " + i + " = " + originalDistribution[i]);
-
-			    //Estimate the current distribution by substracting the distributed fruits from the estimated original distribution
-			    currentDistribution[i] = originalDistribution[i] - distributedFruits[i];
-			    
-			    System.out.println("Estimate of current distribution of fruit " + i + " = " + currentDistribution[i]);
-	    }
-	    for(int i=0;i<distributedFruits.length;i++)
-		    System.out.println("curr Dist: "+currentDistribution[i]);
-    }
 }
 
 
