@@ -48,6 +48,10 @@ public class Player extends fruit.sim.Player
                 return true;
             }
         }
+	else if (stat.stdev()<=0.1*stat.getNFruits()){
+		return false;  	
+	}
+ 
         // otherwise look for avg + std
         else {
 	    double coeff = getCoeff(choiceLeft());
